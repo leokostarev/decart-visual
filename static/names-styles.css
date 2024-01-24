@@ -1,0 +1,20 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-family: sans-serif;
+
+    padding: 20px;
+
+}
+
+.item {
+    font-size: min(3rem, 5vw);
+}
+
+a {
+    color: #00B7FF;
+    text-decoration: none;
+    font-size: 2rem;
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Treap</title>
+    <link rel='stylesheet' href='/static/index-style.css'/>
+</head>
+<body>
+    <span class="really-big">Treap Visualization aka Пиво <a href="/names">List of all names</a></span>
+
+    <div class="sup-container">
+
+        <div class="side">
+            <label for="user-data">Keys and values(not required)</label>
+            <textarea id="user-data" rows="15" cols="15"></textarea>
+
+            <button id="set-user-data">SET KEY VALUE PAIRS</button>
+
+            <button id="set-random">GENERATE RANDOM KEY VALUE PAIRS</button>
+        </div>
+
+        <canvas id="canvas" height="2000" width="3000"></canvas>
+    </div>
+
+    <script type="module" src="/static/interactive.js"></script>
+</body>
+</html>
