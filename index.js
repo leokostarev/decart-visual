@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 
 const app = express();
-
+module.exports = exports = app;
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
