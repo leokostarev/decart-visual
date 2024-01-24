@@ -8,22 +8,47 @@
 
     <title>Treap</title>
     <link rel='stylesheet' href='/static/index-style.css'/>
+    <link rel="icon" type="image/svg" href="/static/favicon.svg">
+
+
 </head>
 <body>
-    <span class="really-big">Treap Visualization aka Пиво <a href="/names">List of all names</a></span>
+    <span class="header">Treap Visualization aka Пиво
+        <a href="/names">List of all names</a>
+    </span>
 
-    <div class="sup-container">
+    <div class="main">
 
         <div class="side">
-            <label for="user-data">Keys and values(not required)</label>
+            <label for="user-data">Value & Priority
+                <button id="show-popup">?</button>
+            </label>
             <textarea id="user-data" rows="15" cols="15"></textarea>
 
-            <button id="set-user-data">SET KEY VALUE PAIRS</button>
-
-            <button id="set-random">GENERATE RANDOM KEY VALUE PAIRS</button>
+            <button id="set-user-data">APPLY</button>
+            <button id="set-random">GENERATE RANDOM TREAP</button>
         </div>
 
-        <canvas id="canvas" height="2000" width="3000"></canvas>
+        <canvas id="canvas" height="2009" width="3009"></canvas>
+    </div>
+
+    <div id="rules-popup">
+        <div>
+            <span>Enter Value-Priority pairs in the text area.</span>
+            <span>Priorities are not required.</span>
+            <span>Each pair is separated by a new line.</span>
+            <span>Value and Priority must be separated by a space.</span>
+            <span>Example:</span>
+            <pre>
+1 2
+3 4
+5
+
+6
+7 9999
+            </pre>
+        </div>
+        <button id="close-popup">✕</button>
     </div>
 
     <script type="module" src="/static/interactive.js"></script>

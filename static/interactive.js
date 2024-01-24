@@ -2,27 +2,41 @@ import {random_tree_with_n_nodes, tree_by_keys_and_values} from "./decart-logic.
 import {tree_to_space} from "./transform-logic.js";
 import {GeometrySpace} from "./geometry-logic.js";
 
-const SPEED_FACTOR = 2;
-let DEBUG = false;
+const SPEED_FACTOR = 2.4;
+const DEBUG = false;
 
-const canvas = document.getElementById("canvas");
 const applyButton = document.getElementById("set-user-data");
 const randomButton = document.getElementById("set-random");
 const userData = document.getElementById("user-data");
+const canvas = document.getElementById("canvas");
+
+const closePopup = document.getElementById("close-popup");
+const showPopup = document.getElementById("show-popup");
+const popup = document.getElementById("rules-popup");
 
 const ctx = canvas.getContext("2d");
+
+canvas.width = canvas.getBoundingClientRect().width * 2;
+canvas.height = canvas.getBoundingClientRect().height * 2;
 
 const mouse = {
     delta_x: 0, delta_y: 0, delta_scale: 0, prev_x: 0, prev_y: 0, drag: false,
 
     // mouse event handlers
-    handle_mouse_up() {
+    handle_mouse_up(event) {
+        event.preventDefault();
         mouse.drag = false;
     },
 
-    handle_mouse_down() {
+    handle_mouse_down(event) {
+        event.preventDefault();
+
         mouse.drag = true;
-    }, handle_mouse_move(event) {
+    },
+
+    handle_mouse_move(event) {
+        event.preventDefault();
+
         if (mouse.drag) {
             mouse.delta_x += event.movementX;
             mouse.delta_y += event.movementY;
@@ -33,10 +47,14 @@ const mouse = {
     },
 
     handle_mouse_wheel(event) {
+        event.preventDefault();
+
         mouse.delta_scale -= event.deltaY;
     },
 
-    handle_mouse_out() {
+    handle_mouse_out(event) {
+        event.preventDefault();
+
         mouse.drag = false;
         mouse.delta_x = 0;
         mouse.delta_y = 0;
@@ -46,6 +64,8 @@ const mouse = {
     // touch event handlers
 
     handle_touch_down(event) {
+        event.preventDefault();
+
         if (event.touches.length !== 1) {
             return;
         }
@@ -55,6 +75,8 @@ const mouse = {
     },
 
     handle_touch_up(event) {
+        event.preventDefault();
+
         if (event.touches.length !== 0) {
             return;
         }
@@ -62,6 +84,8 @@ const mouse = {
     },
 
     handle_touch_move(event) {
+        event.preventDefault();
+
         if (event.touches.length !== 1) {
             return;
         }
@@ -93,33 +117,38 @@ const mouse = {
     },
 };
 
-canvas.addEventListener("mousedown", mouse.handle_mouse_down);
-canvas.addEventListener("mouseup", mouse.handle_mouse_up);
-canvas.addEventListener("mousemove", mouse.handle_mouse_move);
-canvas.addEventListener("wheel", mouse.handle_mouse_wheel);
-canvas.addEventListener("mouseout", mouse.handle_mouse_out);
-canvas.addEventListener("touchmove", mouse.handle_touch_move);
-canvas.addEventListener("touchstart", mouse.handle_touch_down);
-canvas.addEventListener("touchend", mouse.handle_touch_up);
 
 const panZoom = {
-    x: 0, y: 0, scale: 1, apply() {
+    x:     0,
+    y:     0,
+    scale: 1,
+
+    apply() {
         ctx.setTransform(this.scale, 0, 0, this.scale, this.x, this.y);
-    }, scaleAt(x, y, sc) {  // x & y are screen coords, not world
+    },
+
+    scaleAt(x, y, sc) {  // x & y are screen coords, not world
         this.scale *= sc;
         x *= 2; // holyhell
         y *= 2;
         this.x = x + (this.x - x) * sc;
         this.y = y + (this.y - y) * sc;
-    }, toWorld(x, y) {   // converts from screen coords to world coords
+    },
+
+    toWorld(x, y) {   // converts from screen coords to world coords
         const inv = 1 / this.scale;
         return {
-            x: (x - this.x) * inv, y: (y - this.y) * inv,
+            x: (x - this.x) * inv,
+            y: (y - this.y) * inv,
         };
     },
 };
 
-function draw_everything(fill_mode = false) {
+
+let space = new GeometrySpace(0, 0);
+
+
+function draw_everything(thick_mode = false) {
     { // clear canvas
         ctx.fillStyle = "white";
         let {x, y} = panZoom.toWorld(0, 0);
@@ -129,7 +158,7 @@ function draw_everything(fill_mode = false) {
     { // draw tree
         ctx.fillStyle = "black";
 
-        if (fill_mode) {
+        if (thick_mode) {
             ctx.lineWidth = 100;
             for (let thing of space.content) {
                 if (thing.g_type === "line") {
@@ -165,6 +194,7 @@ function draw_everything(fill_mode = false) {
             }
         }
     }
+
     if (DEBUG) { // draw axes
         ctx.beginPath();
         ctx.moveTo(1000, 0);
@@ -188,8 +218,12 @@ function update(forced = false) {
 requestAnimationFrame(() => update(true));
 
 function setTree(tree) {
-    let [_space, tx] = tree_to_space(tree);
-    panZoom.x = -tx + canvas.width / 2;
+    let [_space, root] = tree_to_space(tree);
+    if (root) {
+        panZoom.x = canvas.width / 2 - root.x;
+    }
+    panZoom.y = 0;
+    panZoom.scale = 1;
     space = _space;
 }
 
@@ -201,18 +235,18 @@ function setRandomTree() {
 function setUserTree() {
     try {
         let dat = userData.value
-            .split("\n")
-            .filter(x => x)
-            .map(line => {
-                let nums = line
-                    .split(" ")
-                    .filter(x => x)
-                    .map(Number);
-                if (nums.length >= 3) {
-                    throw Error("Too many numbers in line(max 2): " + line);
-                }
-                return nums;
-            });
+                          .split("\n")
+                          .filter(x => x)
+                          .map(line => {
+                              let nums = line
+                                  .split(" ")
+                                  .filter(x => x)
+                                  .map(Number);
+                              if (nums.length >= 3) {
+                                  throw Error("Too many numbers in line(max 2): " + line);
+                              }
+                              return nums;
+                          });
 
         setTree(tree_by_keys_and_values(dat));
     } catch (e) {
@@ -220,8 +254,23 @@ function setUserTree() {
     }
 }
 
-let space = new GeometrySpace(0, 0);
 
+function setPopupVisibility(x) {
+    popup.style.display = x ? "grid" : "none";
+}
 
+setTree(random_tree_with_n_nodes(10));
+
+canvas.addEventListener("mousedown", mouse.handle_mouse_down);
+canvas.addEventListener("mouseup", mouse.handle_mouse_up);
+canvas.addEventListener("mousemove", mouse.handle_mouse_move);
+canvas.addEventListener("wheel", mouse.handle_mouse_wheel);
+canvas.addEventListener("mouseout", mouse.handle_mouse_out);
+canvas.addEventListener("touchmove", mouse.handle_touch_move);
+canvas.addEventListener("touchstart", mouse.handle_touch_down);
+canvas.addEventListener("touchend", mouse.handle_touch_up);
 applyButton.addEventListener("click", setUserTree);
 randomButton.addEventListener("click", setRandomTree);
+
+showPopup.addEventListener("click", () => setPopupVisibility(true));
+closePopup.addEventListener("click", () => setPopupVisibility(false));
