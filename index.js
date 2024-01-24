@@ -17,9 +17,10 @@ app.get("/names", (req, res) => {
     res.render("names");
 });
 
-
-app.listen(80, "0.0.0.0",
-    () => console.log("App listening on port 3000"));
+if (process.env.LOCAL) {
+    app.listen(80, "0.0.0.0",
+        () => console.log("App listening on port 3000"));
+}
 
 
 // maybe add: api for getting GeometrySpace & other stuff ?
