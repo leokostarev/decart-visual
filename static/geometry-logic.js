@@ -8,39 +8,51 @@ export class GeometryCircle {
 }
 
 export class GeometryLine {
-    constructor(x1, y1, x2, y2) {
-        this.x = x1;
-        this.y = y1;
-        this.dx = x2 - x1;
-        this.dy = y2 - y1;
+    constructor(x1, y1, x2, y2, shortening = 0) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
         this.g_type = "line";
+
+        let l = Math.hypot(x2 - x1, y2 - y1);
+
+        this.sx = (x2 - x1) / l * shortening;
+        this.sy = (y2 - y1) / l * shortening;
     }
 
-    shorten_by(dist) {
-        let len = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-        let direction_x = this.dx * dist / len;
-        let direction_y = this.dy * dist / len;
-
-        this.x += direction_x;
-        this.y += direction_y;
-        this.dx -= direction_x * 2;
-        this.dy -= direction_y * 2;
+    get sx1() {
+        return this.x1 + this.sx;
     }
 
-    get x1() {
-        return this.x;
+    get sy1() {
+        return this.y1 + this.sy;
     }
 
-    get y1() {
-        return this.y;
+    get sx2() {
+        return this.x2 - this.sx;
     }
 
-    get x2() {
-        return this.x + this.dx;
+    get sy2() {
+        return this.y2 - this.sy;
     }
 
-    get y2() {
-        return this.y + this.dy;
+    get x() {
+        return this.x1;
+    }
+
+    get y() {
+        return this.y1;
+    }
+
+    set x(v) {
+        this.x2 += v - this.x1;
+        this.x1 = v;
+    }
+
+    set y(v) {
+        this.y2 += v - this.y1;
+        this.y1 = v;
     }
 }
 

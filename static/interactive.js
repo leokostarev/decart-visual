@@ -181,8 +181,8 @@ function draw_everything(thick_mode = false) {
 
                 } else if (thing.g_type === "line") {
                     ctx.beginPath();
-                    ctx.moveTo(thing.x1, thing.y1);
-                    ctx.lineTo(thing.x2, thing.y2);
+                    ctx.moveTo(thing.sx1, thing.sy1);
+                    ctx.lineTo(thing.sx2, thing.sy2);
                     ctx.stroke();
 
                 } else if (thing.g_type === "text") {

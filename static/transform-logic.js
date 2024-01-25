@@ -37,15 +37,11 @@ function _tree_to_space(tree) {
     space.insert(new GeometryText(left.w + 2.2 * RADIUS, RADIUS, tree.power, 50, "left"));
 
     if (left_node != null) {
-        let line = new GeometryLine(left.w + RADIUS, RADIUS, left_node.x, left_node.y);
-        line.shorten_by(RADIUS);
-        space.insert(line);
+        space.insert(new GeometryLine(left.w + RADIUS, RADIUS, left_node.x, left_node.y, RADIUS));
     }
 
     if (right_node != null) {
-        let line = new GeometryLine(left.w + RADIUS, RADIUS, right_node.x, right_node.y);
-        line.shorten_by(RADIUS);
-        space.insert(line);
+        space.insert(new GeometryLine(left.w + RADIUS, RADIUS, right_node.x, right_node.y, RADIUS));
     }
 
     return [space, vertex];
