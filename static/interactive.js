@@ -19,8 +19,14 @@ const popup = document.getElementById("rules-popup");
 
 const ctx = canvas.getContext("2d");
 
-canvas.width = canvas.getBoundingClientRect().width * 2;
-canvas.height = canvas.getBoundingClientRect().height * 2;
+let canvasRect = canvas.getBoundingClientRect();
+canvas.width = canvasRect.width * 2;
+canvas.height = canvasRect.height * 2;
+
+function extractScreenPos(event) {
+    let t = event.touches[0];
+    return [t.screenX, t.screenY];
+}
 
 const mouse = {
     delta_x: 0, delta_y: 0, delta_scale: 0, prev_x: 0, prev_y: 0, drag: false,
@@ -73,8 +79,7 @@ const mouse = {
             return;
         }
         mouse.drag = true;
-        mouse.prev_x = event.touches[0].pageX;
-        mouse.prev_y = event.touches[0].pageY;
+        [mouse.prev_x, mouse.prev_y] = extractScreenPos(event);
     },
 
     handle_touch_up(event) {
@@ -93,10 +98,11 @@ const mouse = {
             return;
         }
         if (mouse.drag) {
-            mouse.delta_x += event.touches[0].pageX - mouse.prev_x;
-            mouse.delta_y += event.touches[0].pageY - mouse.prev_y;
-            mouse.prev_x = event.touches[0].pageX;
-            mouse.prev_y = event.touches[0].pageY;
+            console.log(event.touches);
+            let pos = extractScreenPos(event);
+            mouse.delta_x += pos[0] - mouse.prev_x;
+            mouse.delta_y += pos[1] - mouse.prev_y;
+            [mouse.prev_x, mouse.prev_y] = pos;
         }
     },
 
