@@ -9,8 +9,6 @@
     <title>Treap</title>
     <link rel='stylesheet' href='/static/index-style.css'/>
     <link rel="icon" type="image/svg" href="/static/favicon.svg">
-
-
 </head>
 <body>
     <span class="header">Treap Visualization aka Пиво
@@ -29,7 +27,12 @@
             <button id="set-random">GENERATE RANDOM TREAP</button>
         </div>
 
-        <canvas id="canvas" height="2009" width="3009"></canvas>
+        <div class="canvas-container">
+            <canvas id="canvas" height="2009" width="3009"></canvas>
+            <button id="increase-size">&plus;</button>
+            <button id="decrease-size">&minus;</button>
+        </div>
+
     </div>
 
     <div id="rules-popup">

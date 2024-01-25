@@ -10,6 +10,9 @@ const randomButton = document.getElementById("set-random");
 const userData = document.getElementById("user-data");
 const canvas = document.getElementById("canvas");
 
+const increaseButton = document.getElementById("increase-size");
+const decreaseButton = document.getElementById("decrease-size");
+
 const closePopup = document.getElementById("close-popup");
 const showPopup = document.getElementById("show-popup");
 const popup = document.getElementById("rules-popup");
@@ -259,6 +262,15 @@ function setPopupVisibility(x) {
     popup.style.display = x ? "grid" : "none";
 }
 
+
+function increaseSize() {
+    panZoom.scaleAt(canvas.width / 4, canvas.height / 4, 1.1);
+}
+
+function decreaseSize() {
+    panZoom.scaleAt(canvas.width / 4, canvas.height / 4, 0.9);
+}
+
 setTree(random_tree_with_n_nodes(10));
 
 canvas.addEventListener("mousedown", mouse.handle_mouse_down);
@@ -271,6 +283,16 @@ canvas.addEventListener("touchstart", mouse.handle_touch_down);
 canvas.addEventListener("touchend", mouse.handle_touch_up);
 applyButton.addEventListener("click", setUserTree);
 randomButton.addEventListener("click", setRandomTree);
+
+increaseButton.addEventListener("click", increaseSize);
+document.addEventListener("keypress", event => {
+    if (event.key === "=") increaseSize();
+});
+
+decreaseButton.addEventListener("click", decreaseSize);
+document.addEventListener("keypress", event => {
+    if (event.key === "-") decreaseSize();
+});
 
 showPopup.addEventListener("click", () => setPopupVisibility(true));
 closePopup.addEventListener("click", () => setPopupVisibility(false));
